@@ -10,12 +10,11 @@
   </style>
 </head>
 <body>
-    
-<canvas width="800" height="800" id="game"></canvas>
+<canvas width = "800" height = "800" id = "game"></canvas>
 <div id="divCountScore" style="float:right"><h2>Score:<strong>0</strong><br>High Score:0</h2></div>
 <script>
-  var highScore=0;
-  window.onload=fetchHighScore;
+  var highScore = 0;
+  window.onload = fetchHighScore;
 var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 var grid = 16;
@@ -37,23 +36,27 @@ function updateScore()
 {
   var x=document.getElementById("divCountScore");
   if(count>highScore)
-  {highScore=count;}
-  localStorage.highScore=JSON.stringify(highScore);
-  x.innerHTML="<h2>Score :  <strong>"+count+"</strong><br>High Score:"+highScore+"</h2>";
+  {
+    highScore = count;
+  }
+  localStorage.highScore = JSON.stringify(highScore);
+  x.innerHTML = "<h2>Score :  <strong>" + count + "</strong><br>High Score:" + highScore + "</h2>";
 }
 function randomize()
 {
-  apple.x=grid*Math.floor(Math.random() * (+max - +min) + + min);
-  apple.y=grid*Math.floor(Math.random() * (+max - +min) + + min);
+  apple.x = grid * Math.floor(Math.random() * (+max - +min) + + min);
+  apple.y = grid * Math.floor(Math.random() * (+max - +min) + + min);
   for(var i=0;i<snake.cells.length;i++)
   {
-    if(snake.cells[i].x==apple.x && snake.cells[i].y==apple.y) 
-    {randomize();}
+    if(snake.cells[i].x == apple.x && snake.cells[i].y == apple.y) 
+    {
+      randomize();
+    }
   }
 }
 var apple = {
-  x: grid*Math.floor(Math.random() * (+max - +min) + + min),
-  y: grid*Math.floor(Math.random() * (+max - +min) + + min),
+  x: grid * Math.floor(Math.random() * (+max - +min) + + min),
+  y: grid * Math.floor(Math.random() * (+max - +min) + + min),
 };
 
 // draw apple
@@ -68,9 +71,9 @@ drawApple();
 function drawSnake()
 {
   context.fillStyle = 'blue' ;
-  context.fillRect(snake.cells[0].x, snake.cells[0].y, grid-1, grid-1);
+  context.fillRect(snake.cells[0].x, snake.cells[0].y, grid - 1, grid - 1);
   context.fillStyle = 'green';
-  for(var i=1 ; i<snake.cells.length ; i++)
+  for(var i = 1; i < snake.cells.length; i++)
     context.fillRect(snake.cells[i].x, snake.cells[i].y, grid-1, grid-1);
 }
 drawSnake();  

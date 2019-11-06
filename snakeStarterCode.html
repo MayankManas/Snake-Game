@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snake: Xenzia</title>
+  
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { background : rgb(80, 58, 58); display: flex; align-items: left; justify-content: center; }
+    canvas { background : rgb(29, 27, 27); border: 1px solid white;}
+  </style>
+</head>
+<body>
+    
+<canvas width="800" height="800" id="game"></canvas>
+<div id="divCountScore" style="float:right"><h2>Score:<strong>0</strong><br>High Score:0</h2></div>
+<script>
+  var highScore=0;
+  window.onload=fetchHighScore;
+var canvas = document.getElementById('game');
+var context = canvas.getContext('2d');
+var grid = 16;
+var count = 0;
+
+var snake = 
+{
+  x : 160,
+  y : 160 ,
+ cells : [{x:160 , y:160},{x:160,y:160+grid} ] ,
+};
+var max =canvas.height/grid, min=0;
+function fetchHighScore()
+{
+  highScore=JSON.parse(localStorage.highScore);
+  updateScore();
+}
+function updateScore()
+{
+  var x=document.getElementById("divCountScore");
+  if(count>highScore)
+  {highScore=count;}
+  localStorage.highScore=JSON.stringify(highScore);
+  x.innerHTML="<h2>Score :  <strong>"+count+"</strong><br>High Score:"+highScore+"</h2>";
+}
+function randomize()
+{
+  apple.x=grid*Math.floor(Math.random() * (+max - +min) + + min);
+  apple.y=grid*Math.floor(Math.random() * (+max - +min) + + min);
+  for(var i=0;i<snake.cells.length;i++)
+  {
+    if(snake.cells[i].x==apple.x && snake.cells[i].y==apple.y) 
+    {randomize();}
+  }
+}
+var apple = {
+  x: grid*Math.floor(Math.random() * (+max - +min) + + min),
+  y: grid*Math.floor(Math.random() * (+max - +min) + + min),
+};
+
+// draw apple
+function drawApple()
+{
+  context.fillStyle = 'red';
+  context.fillRect(apple.x, apple.y, grid-1, grid-1); 
+}
+drawApple();
+
+// draw snake
+function drawSnake()
+{
+  context.fillStyle = 'blue' ;
+  context.fillRect(snake.cells[0].x, snake.cells[0].y, grid-1, grid-1);
+  context.fillStyle = 'green';
+  for(var i=1 ; i<snake.cells.length ; i++)
+    context.fillRect(snake.cells[i].x, snake.cells[i].y, grid-1, grid-1);
+}
+drawSnake();  
+
+function moveSnake( dx , dy)
+{
+  snake.x += dx ;
+  snake.y += dy ;
+  for(var i=0;i<snake.cells.length;i++)
+  {
+    if(snake.x==snake.cells[i].x && snake.cells[i].y==snake.y )
+    {
+      alert("game over!");
+      window.location.reload();
+    }
+  }
+  if(snake.x==canvas.width || snake.y==canvas.height || snake.x==-1*grid || snake.y==-1*grid)
+  {
+    alert("game over");
+    window.location.reload();
+  }
+  if(snake.x==apple.x && snake.y==apple.y)
+  {
+    snake.cells.unshift({x : snake.x , y : snake.y});
+    count++;
+    updateScore();
+    randomize();
+    drawApple();
+    drawSnake();
+    return ;
+  }
+  snake.cells.unshift({x: snake.x , y: snake.y}) ; // Insert at 0th position
+  snake.cells.pop();  // remove the last element
+  drawSnake();
+}
+function saveProgress()
+{
+}
+var flag=false;
+// listen to keyboard events to move the snake
+document.addEventListener('keydown', function(e) 
+{
+  let dx = 0, dy = 0 ;
+  // left arrow key
+  if(e.keyCode == 32)
+  {
+     if(!flag)
+     {
+       flag=!flag;
+       saveProgress();
+  
+        return ;
+     }
+     else {
+           flag=!flag;
+           deleteProgress();
+      
+       return  ;
+     }
+  }
+  if (e.keyCode == 37 ) 
+  {
+    dx = -grid;
+    dy = 0;
+  }
+  // up arrow key
+  else if (e.keyCode == 38 ) 
+  {
+    dy = -grid;
+    dx = 0;
+  }
+  // right arrow key
+  else if (e.keyCode == 39 ) 
+  {
+    dx = grid;
+    dy = 0;
+  }
+  // down arrow key
+  else if (e.keyCode == 40 ) 
+  {
+    dy = grid;
+    dx = 0;
+  }
+  context.clearRect(0, 0, canvas.width,canvas.height);// Clear the Canvas
+  moveSnake(dx,dy);
+  drawApple();
+});
+</script>
+</body>
+</html>
